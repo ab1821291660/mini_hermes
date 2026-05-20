@@ -1,0 +1,39 @@
+#model:
+#  api_key: "lm-studio"
+#  base_url: "http://localhost:1234/v1"
+#  model: "qwen3.5-35b-a3b"
+#  max_tokens: 400
+
+#model:
+#  api_key: "bef20b51568f4b25a35ea03b615164ea"
+#  base_url: "http://chatgpt.58corp.com/api/v2"
+#  model: "deepseek-v4-pro-ali"
+#  max_tokens: 1048576
+model:
+  api_key: "sk-47496d4141ee40b9bbdeb4c6739e16cf"
+  base_url: "https://api.deepseek.com"
+  model: "deepseek-v4-pro"
+  max_tokens: 320000
+# Auxiliary model for summarization (same local model)
+aux_model:
+#  model: "qwen3.5-35b-a3b"
+  max_tokens: 300
+
+
+# Learning loop nudge intervals
+learning:
+  memory_nudge_interval: 5    # every N user turns
+  skill_nudge_interval: 8     # every N tool-calling iterations
+  flush_min_turns: 3          # min turns before compression flush 没用
+
+# Agent limits
+agent:
+  max_iterations: 15
+
+# Anthropic prompt caching (Chapter 6); no effect on DeepSeek/LM Studio when gated off
+prompt_caching:
+  enabled: false
+  provider: auto          # auto | anthropic | off
+  cache_ttl: 1h           # 5m | 1h
+  log_usage: true
+
