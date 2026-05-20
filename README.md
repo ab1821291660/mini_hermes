@@ -1,0 +1,2 @@
+# mini_hermes
+2000行代码拆解Hermes，从零Python实现Hermes自进化Self-Improving Agent
