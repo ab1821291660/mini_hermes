@@ -28,7 +28,7 @@ class SessionRecall:
                 seen[sid] = r
             if len(seen) >= max_sessions:
                 break
-        print("recall" +str(seen))
+        print("----recall：" +str(seen))
         #recall{'659acf74-f84d-4178-8194-68a63990437e': {'session_id': '659acf74-f84d-4178-8194-68a63990437e', 'role': 'user', 'snippet': '>>>你好<<<', 'source': 'cli', 'date': '2026-05-20 14:47'}}
         #[2026-05-20 14:47] 用户以“你好”问候，助手回应并询问需求。随后用户询问模型身份，助手明确自己是Anthropic开发的Claude，不是DeepSeek。对话围绕模型归属展开澄清，最终助手重申自身为Claude，并再次提供帮助。
 

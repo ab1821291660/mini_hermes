@@ -126,7 +126,8 @@ def main():
     # ── REPL ──
     print("╔══════════════════════════════════════╗")
     print("║       Mini-Hermes Agent v0.1         ║")
-    print("║  /mem /skills /tools /sessionsDB       ║")
+    print("║  /mem /skills /tools                 ║")
+    print("║  /contextengineering/sessionsDB      ║")
     print("║  exit to quit                        ║")
     print("╚══════════════════════════════════════╝")
     print(f"  Model: {model}")
@@ -148,6 +149,45 @@ def main():
             break
 
 
+
+        if user_input == "/contextengineering":
+            query = input( "Command (stats|prompt|messages|compress): ").strip().lower()
+            if query == "systemprompt":
+                print(agent.system_prompt or "(empty)")
+            elif query == "messages":
+                print(agent.messages)
+            elif query == "stats":
+                print(f"  Messages: {len(agent.messages)}")
+                est = compressor._estimate_tokens(agent.messages)
+                threshold = int(compressor.max_context_tokens * compressor.THRESHOLD)
+                print(
+                    f"  Compression threshold: {threshold} (50%)"
+                    f"  Would compress: {'yes' if est >= threshold else 'no'}"
+                )
+
+                pct = est / compressor.max_context_tokens * 100
+                print(f"  Estimated tokens: {est}/{compressor.max_context_tokens} ({pct:.1f}%)")
+                print()
+            elif query == "compress":
+                before = len(agent.messages)
+                before_tokens = compressor._estimate_tokens(agent.messages)
+
+                preview = compressor.maybe_compress([m.copy() for m in agent.messages])
+                after_tokens = compressor._estimate_tokens(preview)
+                print(f"  Before: {before} messages, ~{before_tokens} tokens")
+                print(f"  After:  {len(preview)} messages, "f"~{after_tokens} tokens")
+                print(preview)
+            else:
+                print(f"  Unknown command: {query}")
+                print("   systemprompt | messages | stats |compress")
+            print()
+            continue
+        #user > /contextengineering
+        # Command (stats|prompt|messages|compress): stats
+        #   Messages: 9
+        #   Compression threshold: 16000 (50%)  Would compress: no
+        #   Estimated tokens: 551/32000 (1.7%)
+
         if user_input == "/sessionsDB":
             query = input("Search query: ").strip()
             if query:
@@ -156,6 +196,16 @@ def main():
                 # get_session_messages(session_id)
             print()
             continue
+        #user > /sessionsDB
+        # Search query: 你的模型
+        # recall{'297097ab-0cf6-4ea3-b449-0cad60b94c3f': {'session_id': '297097ab-0cf6-4ea3-b449-0cad60b94c3f', 'role': 'user', 'snippet': '>>>你的模型<<<', 'source': 'cli', 'date': '2026-05-20 21:35'}, '12b1cd42-b52d-4008-b22a-ec304be6e30d': {'session_id': '12b1cd42-b52d-4008-b22a-ec304be6e30d', 'role': 'user', 'snippet': '>>>你的模型<<<', 'source': 'cli', 'date': '2026-05-20 22:02'}}
+        # [2026-05-20 21:35] 助手自称是 **Claude**，由 Anthropic 开发，基于最新一代语言模型，具备多语言理解、代码编写、工具使用和持久记忆等能力，未明确标注具体版本号。
+        #
+        # ---
+        #
+        # [2026-05-20 22:02] 助手说明自己是 Claude，由 Anthropic 开发，但对于具体模型版本（如 Claude 3.5 Sonnet、Claude 4 等）无法确认，建议查阅平台设置页面或文档。
+
+
 
         # Slash commands
         if user_input == "/tools":
