@@ -1,22 +1,9 @@
-#model:
-#  api_key: "lm-studio"
-#  base_url: "http://localhost:1234/v1"
-#  model: "qwen3.5-35b-a3b"
-#  max_tokens: 400
-
-#model:
-#  api_key: "bef20b51568f4b25a35ea03b615164ea"
-#  base_url: "http://chatgpt.58corp.com/api/v2"
-#  model: "deepseek-v4-pro-ali"
-#  max_tokens: 1048576
 model:
-  api_key: "sk-47496d4141ee40b9bbdeb4c6739e16cf"
-  base_url: "https://api.deepseek.com"
-  model: "deepseek-v4-pro"
-  max_tokens: 320000
-# Auxiliary model for summarization (same local model)
+  api_key: "lm-studio"
+  base_url: "http://localhost:1234/v1"
+  model: "qwen3.5-35b-a3b"
+  max_tokens: 400
 aux_model:
-#  model: "qwen3.5-35b-a3b"
   max_tokens: 300
 
 
