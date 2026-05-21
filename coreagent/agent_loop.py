@@ -12,7 +12,7 @@ import threading
 import logging
 from typing import Optional
 from openai import OpenAI
-from tool_calling import ToolCallingStrategy, strategy_for_model##===================================
+from coreagent.tool_calling import ToolCallingStrategy, strategy_for_model##===================================
 # Flush memories before compression (user-role sentinel)
 logger = logging.getLogger(__name__)
 from contextengineering.prompt_caching import apply_prompt_caching

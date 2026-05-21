@@ -19,7 +19,7 @@ from openai import OpenAI
 sys.path.insert(0, str(Path(__file__).parent))
 
 from tools.tool_registry import registry
-from agent_loop import Agent
+from coreagent.agent_loop import Agent
 from contextengineering.prompt_builder import PromptBuilder
 from sessionsDB.session_db import SessionDB##===================================##===================================
 from sessionsDB.recall_CrossSession import SessionRecall##===================================##===================================
@@ -28,8 +28,6 @@ from skills.loader import SkillLoader##===================================
 from contextengineering.compression import ContextCompressor##===================================##===================================
 
 # Import tool modules to trigger registration
-import tools.terminal_tool
-import tools.file_tools
 import memory.memory_tool
 import skills.skillmanager_tool
 

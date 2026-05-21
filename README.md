@@ -24,7 +24,7 @@ d:\GitLab_agent58evolver\mini_hermes\
 │   └── skillmanager_tool.py        # skills_list / skill_view / skill_manage
 ├── sessionsDB/
 │   ├── session_db.py               # SQLite + FTS5
-│   └── recall_CrossSession.py      # 跨会话检索 + LLM 摘要
+│   └── recall_CrossSession.py      # 跨会话检索 + LLM摘要==SQLite FTS5持久化检索 +LLM总结重排序（先粗筛再精排）
 └── contextengineering/
     ├── prompt_builder.py           # 系统提示组装
     ├── prompt_caching.py           # Anthropic cache_control
@@ -47,11 +47,8 @@ d:\GitLab_agent58evolver\mini_hermes\
 | **Context engineering** | `PromptBuilder` 拼 identity + memory + skills + 行为指引；`ContextCompressor` 超 50% 窗口时 head+摘要+tail；压缩前 `flush_memories` 给 agent 一轮只带 memory 工具；`apply_prompt_caching` 可选 Anthropic 断点。 |
 | **Gateway** | **无实现**。仅在 `prompt_caching.py` 注释中提到「兼容 gateway」；实际是直连 `OpenAI` 客户端 + `config.yaml` 的 `base_url`。 |
 | **Config** (`config.yaml`) | `model`（api_key、base_url、model、max_tokens）、`aux_model.max_tokens`（recall 摘要）、`learning` 间隔、`agent.max_iterations`、`prompt_caching`。 |
-
 ---
-
 ## 3. 关键入口点
-
 | 入口 | 说明 |
 |------|------|
 | **`cli.py` → `main()`** | 唯一生产路径：读配置 → 建 client/SessionDB/Recall/Memory/Skills → **一次性** `PromptBuilder.build()` → `Agent` → REPL。 |
@@ -59,15 +56,11 @@ d:\GitLab_agent58evolver\mini_hermes\
 | **副作用注册** | `import memory.memory_tool` / `import skills.skillmanager_tool` 向 `registry` 注册工具。 |
 
 REPL 斜杠命令：`/mem`、`/skills`、`/tools`、`/contextengineering`、`/sessionsDB`；`exit`/`quit` 结束并 `end_session`。
-
 ---
 
 ## 4. 相对「完整 Agent」缺失或不完整之处
-
 **已实现（核心教学链路）：** 多轮 tool loop、双策略 tool calling、持久记忆文件、SQLite+FTS、跨会话 recall、技能 CRUD、学习 nudge + 后台复习、上下文压缩 + 压缩前 memory flush、可选 prompt caching 注入。
-
 **明显缺失或未接线：**
-
 1. **无 HTTP/API gateway、无多通道**（仅终端 CLI）。
 2. **`read_file` / `write_file` / `terminal` 未在 `cli.py` import** → 运行时很可能**没有**文件/终端工具（与 README「内置工具」不符）。
 3. **无测试**（无 `tests/`、`pytest`、`unittest`）。
@@ -82,15 +75,28 @@ REPL 斜杠命令：`/mem`、`/skills`、`/tools`、`/contextengineering`、`/se
 12. **后台复习**：daemon 线程、无取消/去重/错误对用户可见；与主 agent 共享同一 `system_prompt` 快照（不含新技能索引）。
 
 ---
-
 ## 5. 测试覆盖
-
 **无。** 全仓库无 `test_*.py`、`tests/`、`pytest.ini`，`grep` 无测试相关匹配。
 
+
+
+
 ---
+上下文工程：PromptBuilder各种组装
+--上下文压缩前刷盘flush_memories：压缩之前，会执行一次内存刷新，给Agent留出一轮机会来保存重要观察。
+--上下文压缩：当对话接近上下文窗口限制时，会触发“中间压缩”：保留系统提示（头部）和近期消息（尾部），中间部分由 LLM 进行摘要。。。。
 
+工具：文件工具，terminal_command工具，记忆+跨session搜索工具，skill工具
+
+三层记忆体系：（1）持久记忆存储在扁平的 Markdown 文件（MEMORY.md、USER.md）中，作为冻结快照在会话启动时加载到系统提示里。（2）情景记忆基于 SQLite，利用FTS5对以往所有会话进行全文搜索。（3）跨会话回忆会搜索FTS5、按会话分组，并通过一次 LLM 调用对相关历史进行摘要。
+
+skill：加载
+
+学习循环：提醒计数器会追踪Agent自上次使用记忆或技能以来经过的轮次。一旦超过阈值，就会在独立线程上启动一个后台审查 Agent，扫描对话中值得保存的观察记忆或值得创建的技能，且不会阻塞主对话。
+自我改进技能：Agent可以创建、编辑、删除 SKILL.md文件——即在对话过程中发现的、可复用的操作流程。
+
+---
 ## 6. 代码气味与架构缺口
-
 | 问题 | 位置/说明 |
 |------|-----------|
 | **调试残留** | `recall_CrossSession.py` 中 `print("----recall：" + str(seen))`；`cli.py` 大段注释掉的示例输出。 |
@@ -101,11 +107,7 @@ REPL 斜杠命令：`/mem`、`/skills`、`/tools`、`/contextengineering`、`/se
 | **工具结果截断重复** | `Agent._execute_tool` 与 `ToolRegistry.execute` 各 50k 截断。 |
 | **压缩估算粗糙** | 仅按字符/3.5 估 token，不含 tool_calls 体积。 |
 | **FTS 与 messages 同步** | 仅 user/assistant 文本入 FTS；tool 消息不入索引。 |
-
----
-
 ## 7. 数据流（简图）
-
 ```mermaid
 flowchart TB
   CLI[cli.py REPL]
@@ -154,8 +156,11 @@ all：
 - [OpenAI Function Calling](https://platform.openai.com/docs/guides/function-calling) — 工具调用协议标准
 - [Honcho 用户画像](https://github.com/plastic-labs/honcho) — 用户建模参考
 all：https://github.com/search?q=mini+hermes&type=repositories
-参考：https://github.com/mesuvash/mini_hermes
-参考：https://github.com/tangfei-china/mini-hermes
-参考：https://github.com/JerryZ01/hermes-mini ----
+参考----：https://github.com/mesuvash/mini_hermes ----
+参考----：https://github.com/JerryZ01/hermes-mini ----
+参考：https://github.com/tangfei-china/mini-hermes --web
 
+
+todo：
+【改造为跨user的即可】为单用户的跨sessions-----多用户应该-仅为该用户的跨sessionshttps://github.com/mesuvash/mini_hermes
 

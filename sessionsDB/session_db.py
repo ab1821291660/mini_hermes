@@ -134,6 +134,10 @@ class SessionDB:
         sanitized = self._sanitize_fts_query(query)##===================================
         if not sanitized:
             return []
+        ##FTS5 是 SQLite 内置的全文搜索引擎，支持：----因为它是SQLite内置的零成本方案。
+        # 关键词匹配：SELECT ... WHERE messages_fts MATCH 'Python 协程'
+        # 排序：按相关性 rank 排序
+        # 轻量：无须安装额外依赖
         try:
             rows = self.conn.execute("""
                 SELECT m.session_id, m.role,
