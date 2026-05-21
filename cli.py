@@ -28,6 +28,8 @@ from skills.loader import SkillLoader##===================================
 from contextengineering.compression import ContextCompressor##===================================##===================================
 
 # Import tool modules to trigger registration
+import tools.terminal_tool
+import tools.file_tools
 import memory.memory_tool
 import skills.skillmanager_tool
 

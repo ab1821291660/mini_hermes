@@ -259,7 +259,7 @@ class TextStrategy(ToolCallingStrategy):
 # Models known to support structured function calling
 _STRUCTURED_MODELS = {
     "qwen", "mistral", "hermes", "functionary", "firefunction",
-    "gorilla", "nexusraven", "command-r",
+    "gorilla", "nexusraven", "command-r","deepseek",
 }
 def strategy_for_model(model_name: str) -> ToolCallingStrategy:
     """Return the right strategy based on model name heuristics."""
