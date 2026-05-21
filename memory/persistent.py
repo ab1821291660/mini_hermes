@@ -17,6 +17,8 @@ class PersistentMemory:
     def load(self) -> str:
         """Load both files as a combined context block (frozen snapshot)."""
         parts = []
+        # user = self.user_path.read_text(encoding="utf-8").strip()
+        # memory = self.memory_path.read_text(encoding="utf-8").strip()
         user = self.user_path.read_text(encoding="utf-8").strip()
         memory = self.memory_path.read_text(encoding="utf-8").strip()
         if user:

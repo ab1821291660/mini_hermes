@@ -130,14 +130,32 @@ flowchart TB
   AG -->|threshold| CMP[ContextCompressor]
   CMP --> FL[flush_memories]
 ```
-
 ---
 
 ## 8. 依赖与运行
 - **依赖**：`openai>=1.0.0`、`pyyaml>=6.0`、`pick>=2.0.0`（CLI 未用）。
 - **启动**：`python cli.py`（或 `setup.sh` 建 venv）。
-- **当前配置**：`prompt_caching.enabled: false`。
+- **当前配置**：`prompt_caching.enabled: false`。 
+conda create -n claude_code python=3.13.13 -c conda-forge -y
+conda activate claude_code
+d:
+cd  \Github_romote\
+dir
+pip install -r requirements.txt
+
 ---
 **结论：** mini_hermes 是结构清晰的 **Hermes 概念演示**（记忆三层、技能、学习循环、压缩），以 `cli.py` 为唯一入口；要成为「完整 agent」还需接上 file/terminal 工具、测试、gateway、prompt/技能热更新、安全沙箱，并清理占位代码与文档漂移。
+## 参考+Companion blog post
+See [Build a Mini Hermes Agent From Scratch](https://mesuvash.github.io/projects/mini-hermes/) for a detailed walkthrough of the design decisions behind each component.
+all：
+- 官方参考实现思路[NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent) — 
+- [Anthropic Claude Code 架构文档](https://docs.anthropic.com/en/docs/claude-code) — Agent 设计的工业实践
+- [LangChain Agent 概念](https://python.langchain.com/docs/concepts/agents/) — 对比参考
+- [OpenAI Function Calling](https://platform.openai.com/docs/guides/function-calling) — 工具调用协议标准
+- [Honcho 用户画像](https://github.com/plastic-labs/honcho) — 用户建模参考
+all：https://github.com/search?q=mini+hermes&type=repositories
+参考：https://github.com/mesuvash/mini_hermes
+参考：https://github.com/tangfei-china/mini-hermes
+参考：https://github.com/JerryZ01/hermes-mini ----
 
 

@@ -129,7 +129,6 @@ All runtime data lives in `data/` (gitignored):
 - `data/skills/` -- Learned skill definitions
 
 ## Companion blog post
-
 See [Build a Mini Hermes Agent From Scratch](https://mesuvash.github.io/projects/mini-hermes/) for a detailed walkthrough of the design decisions behind each component.
 all：https://github.com/search?q=mini+hermes&type=repositories
 参考：https://github.com/mesuvash/mini_hermes
