@@ -38,7 +38,7 @@ def memory(action: str, text: str = "") -> str:
             return "Error: text (query) is required for search"
         if _session_recall is None:
             return "Error: session recall not available"
-        result = _session_recall.recall(text)##===================================
+        result = _session_recall.recall(text)##===================================##===================================
         return result if result else "No relevant past sessionsDB found."
     else:
         return f"Error: unknown action '{action}'. Use: save, save_user, read, search"
@@ -50,7 +50,7 @@ registry.register(
         "Manage persistent memory across sessionsDB. Actions:\n"
         "- save: Save an observation about the user or project\n"
         "- save_user: Update the user profile\n"
-        "- read: Read current memory and user profile\n"
+        "- read: Read current memory     and user profile\n"
         "- search: Search past conversations for relevant context"
     ),
     parameters={

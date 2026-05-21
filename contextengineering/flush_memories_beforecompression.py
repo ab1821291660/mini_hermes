@@ -51,7 +51,7 @@ def flush_memories(agent, messages: list[dict],
                 if tc.function.name == "memory":##===================================##===================================
                     import json
                     args = json.loads(tc.function.arguments)
-                    agent._execute_tool("memory", args)
+                    agent._execute_tool("memory", args)##===================================##===================================
     except Exception:
         pass
 

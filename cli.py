@@ -263,6 +263,8 @@ def main():
         #         print("  Cancelled.\n")
         #     continue
 
+
+
         # Normal agent turn
         print("\033[2m  thinking...\033[0m", end="", flush=True)
         response = agent.run(user_input)##===================================

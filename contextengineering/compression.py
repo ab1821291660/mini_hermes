@@ -29,7 +29,7 @@ class ContextCompressor:
             return messages  # No compression needed
 
 
-        head = messages[:self.HEAD_MESSAGES]##====
+        head = messages[:self.HEAD_MESSAGES]##3 ##====
         tail = self._get_tail(messages, self.TAIL_TOKENS)##====  ##===================================
         middle_end = len(messages) - len(tail) if tail else len(messages)
         middle = messages[self.HEAD_MESSAGES:middle_end]##====

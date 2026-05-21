@@ -29,6 +29,7 @@ class SessionDB:
                 system_prompt TEXT
             );
 
+
             CREATE TABLE IF NOT EXISTS messages (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 session_id TEXT REFERENCES sessionsDB(id),
@@ -40,8 +41,10 @@ class SessionDB:
                 timestamp REAL
             );
 
+
             CREATE VIRTUAL TABLE IF NOT EXISTS messages_fts 
-            USING fts5(content, content_rowid='id');
+            USING fts5(content, 
+                       content_rowid='id');
         """)##===================================##===================================
         self.conn.commit()
 

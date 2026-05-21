@@ -41,7 +41,7 @@ class PersistentMemory:
         new_entry = f"\n- {text}"
         if len(current) + len(new_entry) > self.MEMORY_LIMIT:
             lines = current.strip().split("\n")
-            while lines and len("\n".join(lines)) + len(new_entry) > self.MEMORY_LIMIT:
+            while lines and len("\n".join(lines)) + len(new_entry) > self.MEMORY_LIMIT:#有大小限制
                 lines.pop(0)
             current = "\n".join(lines)
         self.memory_path.write_text(current + new_entry)
