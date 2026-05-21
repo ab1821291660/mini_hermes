@@ -46,8 +46,8 @@ def skill_view(name: str, file_path: str = None) -> str:
         target = skill["path"] / file_path
         if not target.exists():
             return f"Error: file '{file_path}' not found in skill '{name}'"
-        return target.read_text()
-    return (skill["path"] / "SKILL.md").read_text()
+        return target.read_text(encoding="utf-8")
+    return (skill["path"] / "SKILL.md").read_text(encoding="utf-8")
 
 
 def skill_manage(action: str,
@@ -88,7 +88,7 @@ def skill_manage(action: str,
         target = skill["path"] / (file_path or "SKILL.md")
         if not target.exists():
             return f"Error: file not found: {target}"
-        current = target.read_text()
+        current = target.read_text(encoding="utf-8")
         count = current.count(old_string)
         if count == 0:
             return f"Error: old_string not found in {target.name}"

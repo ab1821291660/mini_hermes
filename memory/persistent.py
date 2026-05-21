@@ -17,8 +17,8 @@ class PersistentMemory:
     def load(self) -> str:
         """Load both files as a combined context block (frozen snapshot)."""
         parts = []
-        user = self.user_path.read_text().strip()
-        memory = self.memory_path.read_text().strip()
+        user = self.user_path.read_text(encoding="utf-8").strip()
+        memory = self.memory_path.read_text(encoding="utf-8").strip()
         if user:
             parts.append(f"### User Profile\n{user}")
         if memory:
@@ -26,16 +26,16 @@ class PersistentMemory:
         return "\n\n".join(parts)
     def read_memory(self) -> str:
         """Read current memory contents."""
-        return self.memory_path.read_text().strip() or "(empty)"
+        return self.memory_path.read_text(encoding="utf-8").strip() or "(empty)"
     def read_user(self) -> str:
         """Read current user profile."""
-        return self.user_path.read_text().strip() or "(empty)"
+        return self.user_path.read_text(encoding="utf-8").strip() or "(empty)"
 
 
 
     def save_observation(self, text: str) -> str:
         """Append an observation to MEMORY.md (writes to disk only)."""
-        current = self.memory_path.read_text()
+        current = self.memory_path.read_text(encoding="utf-8")
         new_entry = f"\n- {text}"
         if len(current) + len(new_entry) > self.MEMORY_LIMIT:
             lines = current.strip().split("\n")

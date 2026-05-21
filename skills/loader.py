@@ -17,7 +17,7 @@ class SkillLoader:
         """Load all skill folders, return name + description + body + path."""
         result = []
         for skill_md in self.skills_dir.rglob("SKILL.md"):
-            text = skill_md.read_text()
+            text = skill_md.read_text(encoding="utf-8")
             meta, body = self._parse_frontmatter(text)
             if meta and meta.get("name"):
                 result.append({

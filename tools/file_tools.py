@@ -16,7 +16,7 @@ def read_file(path: str) -> str:
     if not p.is_file():
         return f"Error: not a file: {path}"
     try:
-        content = p.read_text()
+        content = p.read_text(encoding="utf-8")
         if len(content) > 50000:
             content = content[:50000] + "\n... [truncated]"
         return content
