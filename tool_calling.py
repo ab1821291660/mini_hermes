@@ -1,28 +1,12 @@
-"""
-Tool-Calling Strategies (Chapter 3b)
-
-Two strategies for tool calling depending on model capabilities:
-- StructuredStrategy: for models with native function-calling (Qwen, Mistral, etc.)
-- TextStrategy: for models that emit tool calls as text (Gemma, LLaMA, etc.)
-
-The agent delegates three decisions to the strategy:
-  1. How to present tools to the model (API param vs. system prompt text)
-  2. How to parse tool calls from the response
-  3. How to feed tool results back into the conversation
-"""
 
 import json
 import re
 import uuid
 import logging
 
-logger = logging.getLogger(__name__)
-
-
+loggr = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Parsed tool call — uniform type both strategies produce
-# ---------------------------------------------------------------------------
-
 class ParsedToolCall:
     """A tool call extracted from a model response, regardless of format."""
     __slots__ = ("id", "name", "arguments")
@@ -35,8 +19,6 @@ class ParsedToolCall:
 
 # ---------------------------------------------------------------------------
 # Base
-# ---------------------------------------------------------------------------
-
 class ToolCallingStrategy:
     """Interface that the Agent delegates to."""
 
@@ -61,7 +43,6 @@ class ToolCallingStrategy:
 
 # ---------------------------------------------------------------------------
 # Strategy 1: Structured (OpenAI-compatible function calling)
-# ---------------------------------------------------------------------------
 class StructuredStrategy(ToolCallingStrategy):
     """For models that support the `tools` API parameter."""
     def prepare_kwargs(self, kwargs, tools):
@@ -106,9 +87,12 @@ class StructuredStrategy(ToolCallingStrategy):
         }
 
 
+
+
+
+
 # ---------------------------------------------------------------------------
 # Strategy 2: Text-based (parse tool calls from model output)
-# ---------------------------------------------------------------------------
 # Patterns we try, in order.  Covers Gemma, LLaMA, ChatML, and generic JSON.
 _TOOL_CALL_PATTERNS = [
     # <tool_call>{"name": "...", "arguments": {...}}</tool_call>  (and variants)
